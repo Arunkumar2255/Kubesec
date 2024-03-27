@@ -1,45 +1,52 @@
-name: CI/CD Pipeline
+name: Helm Chart Security Scan
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  security_scan_and_deploy:
+  security_scan:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-2 # Replace with your AWS region
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: 'latest'
 
-    - name: Set up Helm
-      uses: azure/setup-helm@v1 # This action is not specific to Azure and can be used as is
-      with:
-        version: '3.8.0'
+      - name: Install kubeSec
+        run: |
+          curl -sSL https://kubesec.io/install.sh | sh
 
-    - name: Install KubeSec
-      run: |
-        curl -sSL https://github.com/controlplaneio/kubesec/releases/download/v2.11.2/kubesec_linux_amd64.tar.gz | tar xz
-        sudo mv kubesec /usr/local/bin/
+      - name: Run kubeSec on Helm Chart
+        run: |
+          helm template my-chart ./charts/my-chart | kubeSec score - > kubeSec-output.txt
 
-    - name: Generate Kubernetes manifests from Helm chart
-      run: helm template myapp ./charts/myapp/ > k8s.yaml
+      - name: Upload kubeSec Scan Output
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: kubeSec-scan-output
+          path: kubeSec-output.txt
 
-    - name: Scan Kubernetes manifests with KubeSec
-      run: kubesec scan k8s.yaml
+      - name: Post kubeSec Results to PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const output = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'kubeSec-output.txt'), 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '**kubeSec Security Scan Results**\n```\n' + output + '\n```'
+            });
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Update kubeconfig for EKS
-      run: aws eks update-kubeconfig --name <Your-EKS-Cluster-Name> # Replace <Your-EKS-Cluster-Name> with your actual cluster name
-
-    - name: Deploy application with Helm
-      run: helm upgrade myapp ./charts/myapp/ --install --wait
