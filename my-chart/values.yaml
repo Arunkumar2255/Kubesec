@@ -1,1 +1,5 @@
-
+# Example values.yaml content
+replicaCount: 1
+nameOverride: ""
+image:
+  tag: "latest" # Ensure this is defined, as it's used in your deployment.yaml
