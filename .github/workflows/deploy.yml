@@ -18,9 +18,10 @@ jobs:
         with:
           version: 'latest'
 
-      - name: Install kubeSec
+      - name: Install KubeSec
         run: |
-          curl -sSL https://kubesec.io/install.sh | sh
+          curl -sSL https://github.com/controlplaneio/kubesec/releases/download/v2.11.2/kubesec_linux_amd64.tar.gz | tar xz
+          sudo mv kubesec /usr/local/bin/
 
       - name: Run kubeSec on Helm Chart
         run: |
