@@ -25,7 +25,7 @@ jobs:
 
       - name: Run kubeSec on Helm Chart
         run: |
-          helm template my-chart ./charts/my-chart | kubeSec score - > kubeSec-output.txt
+         helm template my-chart ./my-chart | kubesec scan -o json - > kubeSec-output.txt
 
       - name: Upload kubeSec Scan Output
         uses: actions/upload-artifact@v2
