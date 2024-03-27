@@ -27,6 +27,7 @@ jobs:
         run: |
          helm template my-chart ./my-chart | kubesec scan -o json - > kubeSec-output.txt
 
+
       - name: Upload kubeSec Scan Output
         uses: actions/upload-artifact@v2
         if: always()
