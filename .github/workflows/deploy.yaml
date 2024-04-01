@@ -38,9 +38,9 @@ jobs:
 
     # Step 4: Deploy if Kubesec score is 5 or higher
     - name: Deploy
-      if: ${{ env.KUBESCORE -ge 5 }}
+      if: ${{ env.KUBESCORE >= 5 }}
       run: |
-        echo "Deploying since Kubesec score is $KUBESCORE"
-        # Add your deployment commands here
+       echo "Deploying since Kubesec score is $KUBESCORE"
+    # Add your deployment commands here
 
 
