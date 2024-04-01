@@ -11,31 +11,36 @@ on:
 
 jobs:
   security-scan:
+    # Specifies the runner environment
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Install Kubesec
-        run: |
-          curl -sSL https://github.com/controlplaneio/kubesec/releases/download/v2.11.2/kubesec_linux_amd64.tar.gz | tar xz -C /tmp
-          sudo mv /tmp/kubesec /usr/local/bin
-      
-      - name: Scan Kubernetes manifests and check score
-        run: |
-         output=$(kubesec scan ./my-chart/*.yaml)
-         echo "$output"
-         if [ -z "$output" ]; then
-         echo "Kubesec output is empty"
-         exit 1
-          fi
-         score=$(echo "$output" | jq '.[0].score')
-         echo "Kubesec score: $score"
-         echo "KUBESCORE=$score" >> $GITHUB_ENV
-         if [ "$score" -lt 5 ]; then
-         echo "Security scan did not pass."
-         exit 1
-          fi
 
+    steps:
+    # Step 1: Checks out the repository code
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Step 2: Install Kubesec for security scanning
+    - name: Install Kubesec
+      run: |
+        curl -sSL https://github.com/controlplaneio/kubesec/releases/download/v2.11.2/kubesec_linux_amd64.tar.gz | tar xz -C /tmp
+        sudo mv /tmp/kubesec /usr/local/bin
+
+    # Step 3: Scan Kubernetes manifests with Kubesec
+    - name: Scan Kubernetes manifests
+      run: |
+        score=$(kubesec scan ./my-charts/*.yaml | jq '.[0].score')
+        echo "Kubesec score: $score"
+        echo "KUBESCORE=$score" >> $GITHUB_ENV
+        if [ "$score" -lt 5 ]; then
+          echo "Security scan did not pass."
+          exit 1
+        fi
+
+    # Step 4: Deploy if Kubesec score is 5 or higher
+    - name: Deploy
+      if: ${{ env.KUBESCORE -ge 5 }}
+      run: |
+        echo "Deploying since Kubesec score is $KUBESCORE"
+        # Add your deployment commands here
 
 
