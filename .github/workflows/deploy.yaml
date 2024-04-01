@@ -32,7 +32,7 @@ jobs:
     - name: Validate Kubernetes manifests
       id: kubesec
       run: |
-        kubesec scan ./my-chart/*.yaml > kubesec_output.json && cat kubesec_output.json
+        kubesec scan ./my-chart/*.yaml > kubesec_output.json 
 
     - name: Check validation result
       run: |
