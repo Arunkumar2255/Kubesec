@@ -40,7 +40,7 @@ jobs:
          score=$(echo "$output" | jq '.[0].score')
          echo "Kubesec score: $score"
          echo "KUBESCORE=$score" >> $GITHUB_ENV
-         if [ "$score" -lt 0 ]; then
+         if [ "$score" -lt 2 ]; then
          echo "Security scan did not pass."
          exit 1
           fi
