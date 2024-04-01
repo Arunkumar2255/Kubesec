@@ -36,7 +36,7 @@ jobs:
 
     - name: Check validation result
       run: |
-        if jq -e '.[] | select(.score < 0)' kubesec_output.json; then
+        if jq -e '.[] | select(.score < 0)' kubesec_output.json > /dev/null; then
           echo "Some issues found in Kubernetes manifests. Fail the workflow."
           exit 1
         else
