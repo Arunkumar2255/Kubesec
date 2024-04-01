@@ -1,5 +1,0 @@
-# Example values.yaml content
-replicaCount: 1
-nameOverride: ""
-image:
-  tag: "1.16.0" # Ensure this is defined, as it's used in your deployment.yaml
