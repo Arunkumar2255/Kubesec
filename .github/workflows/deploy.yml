@@ -21,21 +21,21 @@ jobs:
           curl -sSL https://github.com/controlplaneio/kubesec/releases/download/v2.11.2/kubesec_linux_amd64.tar.gz | tar xz -C /tmp
           sudo mv /tmp/kubesec /usr/local/bin
       
-      - name: Scan Kubernetes manifests
-        id: kubesec
+      - name: Scan Kubernetes manifests and check score
         run: |
-          score=$(kubesec scan ./my-chart/*.yaml | jq '.[0].score')
-          echo "Kubesec score: $score"
-          echo "KUBESCORE=$score" >> $GITHUB_ENV
-          if [ "$score" -lt 5 ]; then
-            echo "Security scan did not pass."
-            exit 1
+         output=$(kubesec scan ./my-chart/*.yaml)
+         echo "$output"
+         if [ -z "$output" ]; then
+         echo "Kubesec output is empty"
+         exit 1
           fi
-      
-      - name: Deploy
-        if: ${{ env.KUBESCORE >= 5 }}
-        run: |
-          echo "Deploying since Kubesec score is $KUBESCORE"
-          # Add your deployment commands here
+         score=$(echo "$output" | jq '.[0].score')
+         echo "Kubesec score: $score"
+         echo "KUBESCORE=$score" >> $GITHUB_ENV
+         if [ "$score" -lt 5 ]; then
+         echo "Security scan did not pass."
+         exit 1
+          fi
+
 
 
