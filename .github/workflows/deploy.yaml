@@ -33,6 +33,7 @@ jobs:
       id: kubesec
       run: |
         kubesec scan ./my-charts/*.yaml > kubesec_output.json
+        cat kubesec_output.json
 
     - name: Check validation result
       run: |
