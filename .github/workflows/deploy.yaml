@@ -19,6 +19,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Install jq
+      run: sudo apt-get update && sudo apt-get install -y jq
+
+
     # Step 2: Install Kubesec for security scanning
     - name: Install Kubesec
       run: |
