@@ -24,7 +24,7 @@ jobs:
       - name: Scan Kubernetes manifests
         id: kubesec
         run: |
-          score=$(kubesec scan ./k8s-manifests/*.yaml | jq '.[0].score')
+          score=$(kubesec scan ./my-chart/*.yaml | jq '.[0].score')
           echo "Kubesec score: $score"
           echo "KUBESCORE=$score" >> $GITHUB_ENV
           if [ "$score" -lt 5 ]; then
