@@ -29,19 +29,16 @@ jobs:
         curl -sSL https://github.com/controlplaneio/kubesec/releases/download/v2.11.2/kubesec_linux_amd64.tar.gz | tar xz -C /tmp
         sudo mv /tmp/kubesec /usr/local/bin
 
-    - name: Scan Kubernetes manifests and check score
+    - name: Validate Kubernetes manifests
+      id: kubesec
       run: |
-         output=$(kubesec scan ./my-chart/*.yaml)
-         echo "$output"
-         if [ -z "$output" ]; then
-         echo "Kubesec output is empty"
-         exit 1
-          fi
-         score=$(echo "$output" | jq '.[0].score')
-         echo "Kubesec score: $score"
-         echo "KUBESCORE=$score" >> $GITHUB_ENV
-         if [ "$score" -lt 0 ]; then
-         echo "Security scan did not pass."
-         exit 1
-          fi
+        kubesec scan ./my-charts/*.yaml > kubesec_output.json
 
+    - name: Check validation result
+      run: |
+        if jq -e '.[] | select(.score < 0)' kubesec_output.json; then
+          echo "Some issues found in Kubernetes manifests. Fail the workflow."
+          exit 1
+        else
+          echo "All Kubernetes manifests passed validation."
+        fi
