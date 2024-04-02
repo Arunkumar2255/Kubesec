@@ -44,6 +44,7 @@ jobs:
          else
            echo "All Kubernetes manifests passed validation."
         fi
+        shell: /bin/bash
 
 
 
