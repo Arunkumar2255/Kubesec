@@ -37,9 +37,10 @@ jobs:
     - name: Run kubesec scan and check validation result
       run: |
        kubesec scan ./my-chart/*.yaml > kubesec_output.json
+       cat kubesec_output.json
          if [ $? -ne 0 ]; then
          echo "Some issues found in Kubernetes manifests. Fail the workflow."
-        cat kubesec_output.json
+        
         exit 2
         else
         echo "All Kubernetes manifests passed validation."
