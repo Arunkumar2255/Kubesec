@@ -38,12 +38,13 @@ jobs:
 
     - name: Check validation result
       run: |
-       if grep -q '"score":.*[[:space:]]-?[1-9]' kubesec_output.json; then
-       echo "Some issues found in Kubernetes manifests. Fail the workflow."
-        exit 2
-       else
-        echo "All Kubernetes manifests passed validation."
-         fi
+        if jq -e '.score < 0' kubesec_output.json > /dev/null; then
+         echo "Some issues found in Kubernetes manifests. Fail the workflow."
+        exit 1
+         else
+           echo "All Kubernetes manifests passed validation."
+        fi
+
 
 
         
