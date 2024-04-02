@@ -29,10 +29,10 @@ jobs:
         curl -sSL https://github.com/controlplaneio/kubesec/releases/download/v2.11.2/kubesec_linux_amd64.tar.gz | tar xz -C /tmp
         sudo mv /tmp/kubesec /usr/local/bin
 
-    - name: Validate Kubernetes manifests
-      id: kubesec
-      run: |
-        kubesec scan ./my-chart/*.yaml > kubesec_output.json && cat kubesec_output.json
+   # - name: Validate Kubernetes manifests
+    #  id: kubesec
+     # run: |
+      #  kubesec scan ./my-chart/*.yaml > kubesec_output.json && cat kubesec_output.json
 
     - name: Run kubesec scan and check validation result
       run: |
