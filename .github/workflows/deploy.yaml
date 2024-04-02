@@ -40,11 +40,12 @@ jobs:
       run: |
        if jq -e '.[] | select(.score < 0)' kubesec_output.json > /dev/null; then
        echo "Some issues found in Kubernetes manifests. Fail the workflow."
-        exit 1
-        else
+       exit 1
+       else
        echo "All Kubernetes manifests passed validation."
-        fi
-       shell: /bin/bash
+       fi
+        shell: /usr/bin/bash
+
 
 
 
