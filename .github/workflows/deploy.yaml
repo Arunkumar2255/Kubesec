@@ -32,8 +32,8 @@ jobs:
     - name: Validate Kubernetes manifests
       id: kubesec
       run: |
-        kubesec scan ./my-chart/*.yaml > kubesec_output.json 
-        cat kubesec_output.json
+        kubesec scan ./my-chart/*.yaml | tee kubesec_output.json 
+        
 
     - name: Check validation result
       run: |
@@ -41,9 +41,9 @@ jobs:
 
        # Converting the result to an integer
        integer_result=$((result)) 
-        if [ "$integer_result" -gt 0 ]; then
+        if [ $integer_result -gt 0 ]; then
          echo "All Kubernetes manifests passed validation."
-       elif [ "$integer_result" -lt 0 ]; then
+       elif [ $integer_result -lt 0 ]; then
          echo "Some issues found in Kubernetes manifests. Fail the workflow."
         exit 1
         fi
