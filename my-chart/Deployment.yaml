@@ -20,5 +20,5 @@ spec:
         ports:
         - containerPort: 80
         securityContext:
-         privileged: false
+         privileged: true
          runAsNonRoot: true
