@@ -1,4 +1,3 @@
-
 name: CI/CD Pipeline
 
 on:
@@ -11,42 +10,37 @@ on:
 
 jobs:
   security-scan:
-    # Specifies the runner environment
+    # Specifies the runner environment to be Ubuntu latest version
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checks out the repository code
-    - name: Checkout code
-      uses: actions/checkout@v2
+      # Step 1: Checks out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-   # - name: Install jq
-    #  run: sudo apt-get update && sudo apt-get install -y jq
+      # Step 2: Install Kubesec for security scanning of Kubernetes manifests
+      - name: Install Kubesec
+        run: |
+          curl -sSL https://github.com/controlplaneio/kubesec/releases/download/v2.11.2/kubesec_linux_amd64.tar.gz | tar xz -C /tmp
+          sudo mv /tmp/kubesec /usr/local/bin
 
+      # Step 3: Validate Kubernetes manifests with Kubesec
+      - name: Validate Kubernetes manifests
+        run: |
+          kubesec scan ./my-chart/*.yaml | tee kubesec_output.json
 
-    # Step 2: Install Kubesec for security scanning
-    - name: Install Kubesec
-      run: |
-        curl -sSL https://github.com/controlplaneio/kubesec/releases/download/v2.11.2/kubesec_linux_amd64.tar.gz | tar xz -C /tmp
-        sudo mv /tmp/kubesec /usr/local/bin
+      # Step 4: Check validation results and determine if any manifest fails the security scan
+      - name: Check validation result
+        run: |
+          result=$(grep '"score"' kubesec_output.json | cut -d ':' -f2 | tr -d ', ')
+          integer_result=$(echo "$result" | xargs) # Ensures that the result is trimmed and treated as an integer
+          if [ $integer_result -gt 0 ]; then
+            echo "All Kubernetes manifests passed validation."
+          elif [ $integer_result -le 0 ]; then
+            echo "Some issues found in Kubernetes manifests. Fail the workflow."
+            exit 1
+          fi
 
-    - name: Validate Kubernetes manifests
-      id: kubesec
-      run: |
-        kubesec scan ./my-chart/*.yaml | tee kubesec_output.json 
-        
-
-    - name: Check validation result
-      run: |
-       result=$(grep '"score"' kubesec_output.json | cut -d ':' -f2 | sed 's/,//g')
-
-       # Converting the result to an integer
-       integer_result=$((result)) 
-        if [ $integer_result -gt 0 ]; then
-         echo "All Kubernetes manifests passed validation."
-       elif [ $integer_result -lt 0 ]; then
-         echo "Some issues found in Kubernetes manifests. Fail the workflow."
-        exit 1
-        fi
 
    
 
