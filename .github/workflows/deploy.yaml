@@ -35,26 +35,26 @@ jobs:
         kubesec scan ./my-chart/*.yaml | tee kubesec_output.json 
         
 
-    #- name: Check validation result
-     # run: |
-      # result=$(grep '"score"' kubesec_output.json | cut -d ':' -f2 | sed 's/,//g')
-
-       # Converting the result to an integer
-       #integer_result=$((result)) 
-        #if [ $integer_result -gt 0 ]; then
-         #echo "All Kubernetes manifests passed validation."
-       #elif [ $integer_result -lt 0 ]; then
-         #echo "Some issues found in Kubernetes manifests. Fail the workflow."
-        #exit 1
-        #fi
-
     - name: Check validation result
       run: |
-       if grep -q '"score":.*[[:space:]]-?[1-9]' kubesec_output.json; then
-       echo "Some issues found in Kubernetes manifests. Fail the workflow."
+       result=$(grep '"score"' kubesec_output.json | cut -d ':' -f2 | sed 's/,//g')
+
+       # Converting the result to an integer
+       integer_result=$((result)) 
+        if [ $integer_result -gt 0 ]; then
+         echo "All Kubernetes manifests passed validation."
+       elif [ $integer_result -lt 0 ]; then
+         echo "Some issues found in Kubernetes manifests. Fail the workflow."
         exit 1
-       else
-        echo "All Kubernetes manifests passed validation."
-         fi
+        fi
+
+   # - name: Check validation result
+    #  run: |
+     #  if grep -q '"score":.*[[:space:]]-?[1-9]' kubesec_output.json; then
+      # echo "Some issues found in Kubernetes manifests. Fail the workflow."
+       # exit 1
+       #else
+        #echo "All Kubernetes manifests passed validation."
+         #fi
 
 
