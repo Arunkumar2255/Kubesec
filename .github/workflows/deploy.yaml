@@ -36,7 +36,7 @@ jobs:
           integer_result=$(echo "$result" | xargs) # Ensures that the result is trimmed and treated as an integer
           if [ $integer_result -gt 0 ]; then
             echo "All Kubernetes manifests passed validation."
-          elif [ $integer_result -le 0 ]; then
+          elif [ $integer_result -lt 0 ]; then
             echo "Some issues found in Kubernetes manifests. Fail the workflow."
             exit 1
           fi
