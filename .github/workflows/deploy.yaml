@@ -19,8 +19,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install jq
-      run: sudo apt-get update && sudo apt-get install -y jq
+   # - name: Install jq
+    #  run: sudo apt-get update && sudo apt-get install -y jq
 
 
     # Step 2: Install Kubesec for security scanning
@@ -48,13 +48,6 @@ jobs:
         exit 1
         fi
 
-   # - name: Check validation result
-    #  run: |
-     #  if grep -q '"score":.*[[:space:]]-?[1-9]' kubesec_output.json; then
-      # echo "Some issues found in Kubernetes manifests. Fail the workflow."
-       # exit 1
-       #else
-        #echo "All Kubernetes manifests passed validation."
-         #fi
+   
 
 
