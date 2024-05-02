@@ -48,7 +48,7 @@ jobs:
          if [ $ integer_result -gt 0 ]; then
          echo "All Kubernetes manifests passed validation."
          elif [ $integer_result -lt 0 ]; then
-           echo "Validation failed, check validation file"
+           echo "Validation failed, Check Validate Kubernetes manifests"
             exit 0
           fi
          
