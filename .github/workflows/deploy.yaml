@@ -30,17 +30,25 @@ jobs:
           kubesec scan ./my-chart/*.yaml | tee kubesec_output.json
 
       # Step 4: Check validation results and determine if any manifest fails the security scan
+     # - name: Check validation result
+      #  run: |
+       #   result=$(grep '"score"' kubesec_output.json | cut -d ':' -f2 | tr -d ', ')
+        #  integer_result=$(echo "$result" | xargs) # Ensures that the result is trimmed and treated as an integer
+         # if [ $integer_result -gt 0 ]; then
+          #  echo "All Kubernetes manifests passed validation."
+          #elif [ $integer_result -lt 0 ]; then
+           # echo "Some issues found in Kubernetes manifests. Fail the workflow."
+            #exit 1
+          #fi
+
       - name: Check validation result
         run: |
-          result=$(grep '"score"' kubesec_output.json | cut -d ':' -f2 | tr -d ', ')
-          integer_result=$(echo "$result" | xargs) # Ensures that the result is trimmed and treated as an integer
-          if [ $integer_result -gt 0 ]; then
-            echo "All Kubernetes manifests passed validation."
-          elif [ $integer_result -lt 0 ]; then
-            echo "Some issues found in Kubernetes manifests. Fail the workflow."
-            exit 1
-          fi
-
+         if grep -q '"score":.*[[:space:]]-?[1-9]' kubesec_output.json; then
+         echo "Some issues found in Kubernetes manifests. Fail the workflow."
+         exit 1
+         else
+         echo "All Kubernetes manifests passed validation."
+         fi
 
    
 
