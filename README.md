@@ -24,6 +24,7 @@ A GitHub account.
 ## Step 1: Clone the repository and switch to the directory:
 
 $ git clone https://github.com/Arunkumar2255/kubesec.git
+
 $ cd kubesec
 
 
