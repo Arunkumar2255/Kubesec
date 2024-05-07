@@ -19,12 +19,13 @@ A GitHub account.
 - `my-chart/`: Directory containing Kubernetes manifest files for scanning.
 - `deployment.yaml`: Kubernetes deployment manifest.
 
+
+
 ## Workflow Steps
 
 ## Step 1: Clone the repository and switch to the directory:
 
 $ git clone https://github.com/Arunkumar2255/kubesec.git
-
 $ cd kubesec
 
 
@@ -35,17 +36,17 @@ Create or modify the `kubesec.yml` file in `.github/workflows/` to set up the Gi
     name: CI/CD Pipeline
 
     on:
-     push:
-       branches:
-         - main
-     pull_request:
-       branches:
-         - main
+      push:
+        branches:
+          - main
+      pull_request:
+        branches:
+          - main
 
     jobs:
       security-scan:
-      # Specifies the runner environment to be Ubuntu latest version
-      runs-on: ubuntu-latest
+        # Specifies the runner environment to be Ubuntu latest version
+        runs-on: ubuntu-latest
 
     steps:
       # Step 1: Checks out the repository code
@@ -83,7 +84,9 @@ Modify the Kubernetes Manifest
 Locate the deployment.yaml file in your repository where the Kubernetes resources are defined. This file typically includes one or more configurations for deploying applications to your cluster.
 Edit the deployment.yaml to change security-related configurations. For example, if the original pod manifest includes a container running in privileged mode, which is a known security risk, change the privileged setting to false:
 
-        apiVersion: apps/v1
+
+
+    apiVersion: apps/v1
     kind: Deployment
     metadata:
       name: nginx-deployment
