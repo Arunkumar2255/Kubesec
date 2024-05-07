@@ -13,12 +13,11 @@ This project integrates Kubesec with GitHub Actions to automatically perform sec
 A GitHub account.
 
 
-Repository Structure
+## Repository Structure
+
 - `.github/workflows/`: Contains the GitHub Actions workflow files.
 - `my-chart/`: Directory containing Kubernetes manifest files for scanning.
 - `deployment.yaml`: Kubernetes deployment manifest.
-
-
 
 ## Workflow Steps
 
