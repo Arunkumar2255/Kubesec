@@ -83,8 +83,6 @@ Modify the Kubernetes Manifest
 Locate the deployment.yaml file in your repository where the Kubernetes resources are defined. This file typically includes one or more configurations for deploying applications to your cluster.
 Edit the deployment.yaml to change security-related configurations. For example, if the original pod manifest includes a container running in privileged mode, which is a known security risk, change the privileged setting to false:
 
-
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
