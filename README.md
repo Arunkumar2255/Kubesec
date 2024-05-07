@@ -32,19 +32,19 @@ $ cd kubesec
 
 Create or modify the `kubesec.yml` file in `.github/workflows/` to set up the GitHub Actions workflow. This workflow triggers on pull requests and commits to the `main` branch:
 
-   name: CI/CD Pipeline
+    name: CI/CD Pipeline
 
-   on:
-    push:
-      branches:
-        - main
-    pull_request:
-      branches:
-        - main
+    on:
+     push:
+       branches:
+         - main
+     pull_request:
+       branches:
+         - main
 
     jobs:
       security-scan:
-       # Specifies the runner environment to be Ubuntu latest version
+      # Specifies the runner environment to be Ubuntu latest version
       runs-on: ubuntu-latest
 
     steps:
