@@ -125,6 +125,7 @@ Commit and push the changes to retrigger the workflow and ensure all security co
 ## Step 5: Review and Merge the Pull Request
 
 Once the KubeSec scan passes with no issues, review the pull request.
+
 Merge the pull request into the main branch to apply the secure configurations.
 
 
