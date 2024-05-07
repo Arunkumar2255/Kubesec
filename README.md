@@ -5,7 +5,7 @@ KubeSec is a powerful tool for performing security checks on Kubernetes manifest
 
 ## Overview
 
-This project integrates Kubesec with GitHub Actions to automatically perform security scans on Kubernetes manifest files. By embedding Kubesec scans into your CI/CD pipeline, you can detect and mitigate potential security risks before they are deployed to production, ensuring your Kubernetes configurations are secure by design.
+This project uses Kubesec with GitHub Actions to automatically check Kubernetes manifest files for security issues. By including these checks in your CI/CD pipeline, you can identify and fix security risks before they are implemented in production, making your Kubernetes setups safer.
 
 
 ## Prerequisites
